@@ -1,0 +1,30 @@
+[0.013s] Invoking command in '/home/kar/ros_hackathon/build/sjtu_drone_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/kar/ros_hackathon/src/sjtu_drone/sjtu_drone_description -DCMAKE_INSTALL_PREFIX=/home/kar/ros_hackathon/install/sjtu_drone_description
+[0.040s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.339s] -- Found ament_cmake_ros: 0.12.0 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)
+[0.341s] -- Found rclcpp: 28.1.16 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.369s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.377s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.388s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.402s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.463s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.465s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.533s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.606s] [31mCMake Error at CMakeLists.txt:18 (find_package):
+[0.607s]   By not providing "Findgazebo_ros.cmake" in CMAKE_MODULE_PATH this project
+[0.607s]   has asked CMake to find a package configuration file provided by
+[0.607s]   "gazebo_ros", but CMake did not find one.
+[0.607s] 
+[0.607s]   Could not find a package configuration file provided by "gazebo_ros" with
+[0.607s]   any of the following names:
+[0.607s] 
+[0.607s]     gazebo_rosConfig.cmake
+[0.607s]     gazebo_ros-config.cmake
+[0.607s] 
+[0.607s]   Add the installation prefix of "gazebo_ros" to CMAKE_PREFIX_PATH or set
+[0.607s]   "gazebo_ros_DIR" to a directory containing one of the above files.  If
+[0.607s]   "gazebo_ros" provides a separate development package or SDK, be sure it has
+[0.607s]   been installed.
+[0.607s] 
+[0.607s] [0m
+[0.608s] -- Configuring incomplete, errors occurred!
+[0.614s] Invoked command in '/home/kar/ros_hackathon/build/sjtu_drone_description' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/kar/ros_hackathon/src/sjtu_drone/sjtu_drone_description -DCMAKE_INSTALL_PREFIX=/home/kar/ros_hackathon/install/sjtu_drone_description

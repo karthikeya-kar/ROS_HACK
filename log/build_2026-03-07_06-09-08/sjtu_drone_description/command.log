@@ -1,0 +1,2 @@
+Invoking command in '/home/kar/ros_hackathon/build/sjtu_drone_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/kar/ros_hackathon/src/sjtu_drone/sjtu_drone_description -DCMAKE_INSTALL_PREFIX=/home/kar/ros_hackathon/install/sjtu_drone_description
+Invoked command in '/home/kar/ros_hackathon/build/sjtu_drone_description' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/kar/ros_hackathon/src/sjtu_drone/sjtu_drone_description -DCMAKE_INSTALL_PREFIX=/home/kar/ros_hackathon/install/sjtu_drone_description

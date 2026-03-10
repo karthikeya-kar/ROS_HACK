@@ -1,0 +1,50 @@
+[0.010s] Invoking command in '/home/kar/ros_hackathon/build/sjtu_drone_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/kar/ros_hackathon/src/sjtu_drone/sjtu_drone_description -DCMAKE_INSTALL_PREFIX=/home/kar/ros_hackathon/install/sjtu_drone_description
+[0.165s] -- The C compiler identification is GNU 13.3.0
+[0.311s] -- The CXX compiler identification is GNU 13.3.0
+[0.340s] -- Detecting C compiler ABI info
+[0.490s] -- Detecting C compiler ABI info - done
+[0.509s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.510s] -- Detecting C compile features
+[0.511s] -- Detecting C compile features - done
+[0.527s] -- Detecting CXX compiler ABI info
+[0.690s] -- Detecting CXX compiler ABI info - done
+[0.708s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.709s] -- Detecting CXX compile features
+[0.710s] -- Detecting CXX compile features - done
+[0.726s] -- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1") 
+[0.727s] -- Checking for module 'OGRE'
+[0.750s] --   Found OGRE, version 1.9.0
+[0.798s] -- Checking for module 'OGRE-Terrain'
+[0.821s] --   Found OGRE-Terrain, version 1.9.0
+[0.875s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[1.130s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.336s] -- Found ament_cmake_ros: 0.12.0 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)
+[1.354s] -- Found rclcpp: 28.1.16 (/opt/ros/jazzy/share/rclcpp/cmake)
+[1.414s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[1.434s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[1.460s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.487s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.594s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[1.599s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[1.742s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[1.784s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[1.825s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.936s] [31mCMake Error at CMakeLists.txt:18 (find_package):
+[1.936s]   By not providing "Findgazebo_ros.cmake" in CMAKE_MODULE_PATH this project
+[1.936s]   has asked CMake to find a package configuration file provided by
+[1.937s]   "gazebo_ros", but CMake did not find one.
+[1.937s] 
+[1.937s]   Could not find a package configuration file provided by "gazebo_ros" with
+[1.937s]   any of the following names:
+[1.937s] 
+[1.937s]     gazebo_rosConfig.cmake
+[1.937s]     gazebo_ros-config.cmake
+[1.937s] 
+[1.937s]   Add the installation prefix of "gazebo_ros" to CMAKE_PREFIX_PATH or set
+[1.937s]   "gazebo_ros_DIR" to a directory containing one of the above files.  If
+[1.937s]   "gazebo_ros" provides a separate development package or SDK, be sure it has
+[1.937s]   been installed.
+[1.937s] 
+[1.937s] [0m
+[1.938s] -- Configuring incomplete, errors occurred!
+[1.947s] Invoked command in '/home/kar/ros_hackathon/build/sjtu_drone_description' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/kar/ros_hackathon/src/sjtu_drone/sjtu_drone_description -DCMAKE_INSTALL_PREFIX=/home/kar/ros_hackathon/install/sjtu_drone_description
