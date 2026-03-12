@@ -1,0 +1,256 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="quadcopter_gates">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"></plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"></plugin>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"></plugin>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient></material>
+        </visual>
+      </link>
+    </model>
+
+    <include>
+      <uri>file:///home/docuhub/ROS_HACK/models/x3_uav</uri>
+      <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X3</robotNamespace>
+        <jointName>X3/rotor_0_joint</jointName>
+        <linkName>X3/rotor_0</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>800.0</maxRotVelocity>
+        <motorConstant>8.54858e-06</motorConstant>
+        <momentConstant>0.016</momentConstant>
+        <commandSubTopic>gazebo/command/motor_speed</commandSubTopic>
+        <actuator_number>0</actuator_number>
+        <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/0</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+      <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X3</robotNamespace>
+        <jointName>X3/rotor_1_joint</jointName>
+        <linkName>X3/rotor_1</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>800.0</maxRotVelocity>
+        <motorConstant>8.54858e-06</motorConstant>
+        <momentConstant>0.016</momentConstant>
+        <commandSubTopic>gazebo/command/motor_speed</commandSubTopic>
+        <actuator_number>1</actuator_number>
+        <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/1</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+      <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X3</robotNamespace>
+        <jointName>X3/rotor_2_joint</jointName>
+        <linkName>X3/rotor_2</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>800.0</maxRotVelocity>
+        <motorConstant>8.54858e-06</motorConstant>
+        <momentConstant>0.016</momentConstant>
+        <commandSubTopic>gazebo/command/motor_speed</commandSubTopic>
+        <actuator_number>2</actuator_number>
+        <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/2</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+      <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X3</robotNamespace>
+        <jointName>X3/rotor_3_joint</jointName>
+        <linkName>X3/rotor_3</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>800.0</maxRotVelocity>
+        <motorConstant>8.54858e-06</motorConstant>
+        <momentConstant>0.016</momentConstant>
+        <commandSubTopic>gazebo/command/motor_speed</commandSubTopic>
+        <actuator_number>3</actuator_number>
+        <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/3</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+      
+      <!-- Front Camera -->
+      <sensor name="front_camera" type="camera">
+        <pose>0.15 0 0 0 0 0</pose>
+        <camera>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <visualize>true</visualize>
+        <topic>/X3/front_camera</topic>
+      </sensor>
+    </include>
+
+    <!-- Gate 1 - straight ahead -->
+    <model name="gate_1">
+      <static>true</static>
+      <pose>5 0 1.5 0 0 0</pose>
+      <link name="link">
+        <visual name="left_post">
+          <pose>0 0.9 0 0 0 0</pose>
+          <geometry><box><size>0.1 0.1 2.0</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <visual name="right_post">
+          <pose>0 -0.9 0 0 0 0</pose>
+          <geometry><box><size>0.1 0.1 2.0</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <visual name="top_bar">
+          <pose>0 0 1.0 0 0 0</pose>
+          <geometry><box><size>0.1 2.0 0.1</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.1 2.0 2.0</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- Gate 2 - slightly to the right -->
+    <model name="gate_2">
+      <static>true</static>
+      <pose>10 2 1.5 0 0 0</pose>
+      <link name="link">
+        <visual name="left_post">
+          <pose>0 0.9 0 0 0 0</pose>
+          <geometry><box><size>0.1 0.1 2.0</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <visual name="right_post">
+          <pose>0 -0.9 0 0 0 0</pose>
+          <geometry><box><size>0.1 0.1 2.0</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <visual name="top_bar">
+          <pose>0 0 1.0 0 0 0</pose>
+          <geometry><box><size>0.1 2.0 0.1</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.1 2.0 2.0</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- Gate 3 - slightly left and higher -->
+    <model name="gate_3">
+      <static>true</static>
+      <pose>15 -2 2.0 0 0 0</pose>
+      <link name="link">
+        <visual name="left_post">
+          <pose>0 0.9 0 0 0 0</pose>
+          <geometry><box><size>0.1 0.1 2.0</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <visual name="right_post">
+          <pose>0 -0.9 0 0 0 0</pose>
+          <geometry><box><size>0.1 0.1 2.0</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <visual name="top_bar">
+          <pose>0 0 1.0 0 0 0</pose>
+          <geometry><box><size>0.1 2.0 0.1</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.1 2.0 2.0</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+   <!-- Camera Model attached to drone body -->
+    <model name="drone_camera">
+      <pose>0.15 0 0.3 0 0 0</pose>
+      <link name="camera_link">
+        <inertial>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>0.000001</ixx>
+            <iyy>0.000001</iyy>
+            <izz>0.000001</izz>
+          </inertia>
+        </inertial>
+        <sensor name="front_camera" type="camera">
+          <pose>0 0 0 0 0 0</pose>
+          <camera>
+            <horizontal_fov>1.047</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <visualize>true</visualize>
+          <topic>/X3/front_camera</topic>
+        </sensor>
+      </link>
+    </model>
+
+    <!-- Joint to attach camera to drone -->
+    <joint name="camera_joint" type="fixed">
+      <parent>x3::X3/base_link</parent>
+      <child>drone_camera::camera_link</child>
+    </joint>
+
+  </world>
+</sdf>
+ 
