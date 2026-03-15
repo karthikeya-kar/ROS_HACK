@@ -4,8 +4,8 @@ from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    urdf_file = os.path.expanduser('~/ros_hackathon/drone_urdf/drone.urdf')
-    world_file = os.path.expanduser('~/ros_hackathon/worlds/drone_world.sdf')
+    urdf_file = os.path.expanduser('~/ros2_ws/src/ROS_HACK/drone_urdf/drone.urdf')
+    world_file = os.path.expanduser('/home/kar/ros2_ws/src/ROS_Hackathon_Xpecto26_World/worlds/aerial_nav.world')
 
     with open(urdf_file, 'r') as f:
         robot_desc = f.read()
