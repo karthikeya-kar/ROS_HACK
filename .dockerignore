@@ -1,0 +1,23 @@
+# Ignore build artifacts and version control
+.git
+build/
+install/
+log/
+__pycache__
+*.pyc
+*.pyo
+.vscode/
+.idea/
+
+# Ignore stale files that should have been deleted
+drone_urdf/
+models/x3_uav/
+worlds/drone_world.sdf
+worlds/our_world.sdf
+worlds/quadcopter_custom.sdf
+worlds/x4_gates_world.sdf
+src/autonomous.py
+src/pid_hover.py
+src/control/
+src/gate_detection/
+src/navigation/

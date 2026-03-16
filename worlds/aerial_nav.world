@@ -1,0 +1,1083 @@
+<?xml version="1.0"?>
+<!--
+  aerial_nav.world — Gz Sim (Gazebo Harmonic) world for drone gate navigation.
+  Uses X4 UAV Config 1 from Gazebo Fuel with front camera + velocity control.
+-->
+<sdf version="1.6">
+  <world name="aerial_nav_world">
+
+    <!-- ═══ Physics ═══ -->
+    <physics name="4ms" type="ignored">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+
+    <!-- ═══ Required Gz Sim System Plugins ═══ -->
+    <plugin filename="gz-sim-physics-system"
+            name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system"
+            name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin filename="gz-sim-user-commands-system"
+            name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin filename="gz-sim-sensors-system"
+            name="gz::sim::systems::Sensors">
+      <render_engine>ogre</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-imu-system"
+            name="gz::sim::systems::Imu">
+    </plugin>
+    <plugin filename="gz-sim-contact-system"
+            name="gz::sim::systems::Contact">
+    </plugin>
+
+    <!-- ═══ Lighting ═══ -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 20 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <light name="fill_light" type="directional">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 20 0 0 0</pose>
+      <diffuse>0.6 0.6 0.6 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.3 0.4 -1.0</direction>
+    </light>
+    <light name="interior_light_1" type="point">
+      <pose>10 5 7 0 0 0</pose>
+      <diffuse>0.9 0.8 0.6 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>30</range>
+        <constant>0.3</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+    <light name="interior_light_2" type="point">
+      <pose>20 -2 7 0 0 0</pose>
+      <diffuse>0.7 0.75 0.9 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>30</range>
+        <constant>0.3</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- ═══ Ground Plane ═══ -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ═══ Arena Floor ═══ -->
+    <model name="arena_floor">
+      <static>true</static>
+      <pose>15 0 0.005 0 0 0</pose>
+      <link name="floor_link">
+        <visual name="visual">
+          <geometry>
+            <box><size>40 30 0.01</size></box>
+          </geometry>
+          <material>
+            <ambient>0.35 0.35 0.38 1</ambient>
+            <diffuse>0.4 0.4 0.43 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose>-8 -18 18 0 0.55 1.1</pose>
+      </camera>
+    </gui>
+
+    <!-- ═══ Arena Walls ═══ -->
+    <model name="wall_south">
+      <static>true</static>
+      <pose>15 -15 4 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>40 0.3 8</size></box></geometry>
+          <material>
+            <ambient>0.55 0.45 0.35 1</ambient>
+            <diffuse>0.6 0.5 0.4 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>40 0.3 8</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="wall_north">
+      <static>true</static>
+      <pose>15 15 4 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>40 0.3 8</size></box></geometry>
+          <material>
+            <ambient>0.55 0.45 0.35 1</ambient>
+            <diffuse>0.6 0.5 0.4 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>40 0.3 8</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="wall_west">
+      <static>true</static>
+      <pose>-5 0 4 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.3 30 8</size></box></geometry>
+          <material>
+            <ambient>0.55 0.45 0.35 1</ambient>
+            <diffuse>0.6 0.5 0.4 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.3 30 8</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="wall_east">
+      <static>true</static>
+      <pose>35 0 4 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.3 30 8</size></box></geometry>
+          <material>
+            <ambient>0.55 0.45 0.35 1</ambient>
+            <diffuse>0.6 0.5 0.4 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.3 30 8</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- ═══ Dividers ═══ -->
+    <model name="divider_a_south">
+      <static>true</static>
+      <pose>10 -9 4 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.25 12 8</size></box></geometry>
+          <material>
+            <ambient>0.4 0.42 0.48 1</ambient>
+            <diffuse>0.45 0.47 0.53 1</diffuse>
+            <specular>0.08 0.08 0.08 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.25 12 8</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="divider_a_north">
+      <static>true</static>
+      <pose>10 9 4 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.25 12 8</size></box></geometry>
+          <material>
+            <ambient>0.4 0.42 0.48 1</ambient>
+            <diffuse>0.45 0.47 0.53 1</diffuse>
+            <specular>0.08 0.08 0.08 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.25 12 8</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="divider_a_lintel">
+      <static>true</static>
+      <pose>10 0 7 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.25 6 2</size></box></geometry>
+          <material>
+            <ambient>0.4 0.42 0.48 1</ambient>
+            <diffuse>0.45 0.47 0.53 1</diffuse>
+            <specular>0.08 0.08 0.08 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.25 6 2</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="divider_b_south">
+      <static>true</static>
+      <pose>22 -10 4 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.25 10 8</size></box></geometry>
+          <material>
+            <ambient>0.4 0.42 0.48 1</ambient>
+            <diffuse>0.45 0.47 0.53 1</diffuse>
+            <specular>0.08 0.08 0.08 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.25 10 8</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="divider_b_north">
+      <static>true</static>
+      <pose>22 8 4 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.25 14 8</size></box></geometry>
+          <material>
+            <ambient>0.4 0.42 0.48 1</ambient>
+            <diffuse>0.45 0.47 0.53 1</diffuse>
+            <specular>0.08 0.08 0.08 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.25 14 8</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="divider_b_lintel">
+      <static>true</static>
+      <pose>22 -2 7 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.25 6 2</size></box></geometry>
+          <material>
+            <ambient>0.4 0.42 0.48 1</ambient>
+            <diffuse>0.45 0.47 0.53 1</diffuse>
+            <specular>0.08 0.08 0.08 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.25 6 2</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- ═══ Pillars ═══ -->
+    <model name="pillar_01">
+      <static>true</static>
+      <pose>3 -8 3.5 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.4</radius><length>7</length></cylinder></geometry>
+          <material>
+            <ambient>0.6 0.58 0.55 1</ambient>
+            <diffuse>0.65 0.63 0.6 1</diffuse>
+            <specular>0.15 0.15 0.15 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><cylinder><radius>0.4</radius><length>7</length></cylinder></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="pillar_02">
+      <static>true</static>
+      <pose>6 10 3.5 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.4</radius><length>7</length></cylinder></geometry>
+          <material>
+            <ambient>0.6 0.58 0.55 1</ambient>
+            <diffuse>0.65 0.63 0.6 1</diffuse>
+            <specular>0.15 0.15 0.15 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><cylinder><radius>0.4</radius><length>7</length></cylinder></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="pillar_03">
+      <static>true</static>
+      <pose>16 -8 3.5 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.5</radius><length>7</length></cylinder></geometry>
+          <material>
+            <ambient>0.6 0.58 0.55 1</ambient>
+            <diffuse>0.65 0.63 0.6 1</diffuse>
+            <specular>0.15 0.15 0.15 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><cylinder><radius>0.5</radius><length>7</length></cylinder></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="pillar_04">
+      <static>true</static>
+      <pose>28 6 3.5 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.35</radius><length>7</length></cylinder></geometry>
+          <material>
+            <ambient>0.6 0.58 0.55 1</ambient>
+            <diffuse>0.65 0.63 0.6 1</diffuse>
+            <specular>0.15 0.15 0.15 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><cylinder><radius>0.35</radius><length>7</length></cylinder></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- ═══ Crates ═══ -->
+    <model name="crate_stack_01">
+      <static>true</static>
+      <pose>14 -12 0.75 0 0 0.2</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>1.5 1.5 1.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.4 0.2 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>1.5 1.5 1.5</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="crate_stack_02">
+      <static>true</static>
+      <pose>14 -12 2.0 0 0 0.5</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>1.0 1.0 1.0</size></box></geometry>
+          <material>
+            <ambient>0.5 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.4 0.2 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>1.0 1.0 1.0</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="crate_stack_03">
+      <static>true</static>
+      <pose>26 10 0.75 0 0 0.8</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>1.5 1.5 1.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.4 0.2 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>1.5 1.5 1.5</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="crate_large">
+      <static>true</static>
+      <pose>32 -4 1.0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>2.0 2.0 2.0</size></box></geometry>
+          <material>
+            <ambient>0.45 0.3 0.12 1</ambient>
+            <diffuse>0.5 0.35 0.15 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>2.0 2.0 2.0</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- ═══ Landing Pad + H markings ═══ -->
+    <model name="landing_pad">
+      <static>true</static>
+      <pose>0 0 0.05 0 0 0</pose>
+      <link name="pad_link">
+        <visual name="visual">
+          <geometry><cylinder><radius>2.0</radius><length>0.1</length></cylinder></geometry>
+          <material>
+            <ambient>0.15 0.15 0.15 1</ambient>
+            <diffuse>0.2 0.2 0.2 1</diffuse>
+            <specular>0.3 0.3 0.3 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><cylinder><radius>2.0</radius><length>0.1</length></cylinder></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="landing_h_bar">
+      <static>true</static>
+      <pose>0 0 0.11 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>1.2 0.15 0.01</size></box></geometry>
+          <material>
+            <ambient>0.9 0.9 0.0 1</ambient>
+            <diffuse>1.0 1.0 0.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="landing_h_left">
+      <static>true</static>
+      <pose>-0.45 0 0.11 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.15 1.4 0.01</size></box></geometry>
+          <material>
+            <ambient>0.9 0.9 0.0 1</ambient>
+            <diffuse>1.0 1.0 0.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="landing_h_right">
+      <static>true</static>
+      <pose>0.45 0 0.11 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.15 1.4 0.01</size></box></geometry>
+          <material>
+            <ambient>0.9 0.9 0.0 1</ambient>
+            <diffuse>1.0 1.0 0.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ═══ Platform ═══ -->
+    <model name="platform_01">
+      <static>true</static>
+      <pose>16 12 0.5 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>4 3 1.0</size></box></geometry>
+          <material>
+            <ambient>0.3 0.3 0.32 1</ambient>
+            <diffuse>0.35 0.35 0.37 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>4 3 1.0</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- ═══ Floor Stripes ═══ -->
+    <model name="floor_stripe_a">
+      <static>true</static>
+      <pose>10 0 0.015 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.5 6 0.01</size></box></geometry>
+          <material>
+            <ambient>0.9 0.7 0.0 1</ambient>
+            <diffuse>1.0 0.8 0.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="floor_stripe_b">
+      <static>true</static>
+      <pose>22 -2 0.015 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.5 6 0.01</size></box></geometry>
+          <material>
+            <ambient>0.9 0.7 0.0 1</ambient>
+            <diffuse>1.0 0.8 0.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="danger_zone">
+      <static>true</static>
+      <pose>33 0 0.015 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>3 10 0.01</size></box></geometry>
+          <material>
+            <ambient>0.6 0.1 0.1 1</ambient>
+            <diffuse>0.7 0.15 0.15 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!--
+      ═══════════════════════════════════════════════════════════════
+        RED GATES — 10 inline gate models
+        Each gate = 4 bars forming a rectangular frame (approx 2.6m × 2.6m)
+        Colour: bright red (#FF0000)
+      ═══════════════════════════════════════════════════════════════
+    -->
+    <!-- Gate helper: each gate is a self-contained model with
+         left post, right post, top bar, bottom bar, all red. -->
+
+    <model name="gate_01">
+      <static>true</static>
+      <pose>3 0 2.0 0 0 0</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_02">
+      <static>true</static>
+      <pose>7 3 2.5 0 0 0.3</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_03">
+      <static>true</static>
+      <pose>10 0 3.0 0 0 0</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_04">
+      <static>true</static>
+      <pose>15 -2 4.0 0 0 -0.2</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_05">
+      <static>true</static>
+      <pose>17.48 1.71 5.0 0 0 0.5</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_06">
+      <static>true</static>
+      <pose>22 -2 3.5 0 0 0</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_07">
+      <static>true</static>
+      <pose>28 -2 2.5 0 0 -0.7</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_08">
+      <static>true</static>
+      <pose>30 -8 2.0 0 0 -1.57</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_09">
+      <static>true</static>
+      <pose>26.38 -10 3.5 0 0 3.14</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name="gate_10">
+      <static>true</static>
+      <pose>5 -4 2.5 0 0 2.5</pose>
+      <link name="left">
+        <pose>0 1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="right">
+        <pose>0 -1.3 0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 0.15 2.6</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 0.15 2.6</size></box></geometry></collision>
+      </link>
+      <link name="top">
+        <pose>0 0 1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+      <link name="bottom">
+        <pose>0 0 -1.3 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.1 2.6 0.15</size></box></geometry>
+          <material><ambient>1 0 0 1</ambient><diffuse>1 0 0 1</diffuse></material></visual>
+        <collision name="c"><geometry><box><size>0.1 2.6 0.15</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <!--
+      ═══════════════════════════════════════════════════════════════
+        X4 UAV — from Gazebo Fuel (OpenRobotics / X4 UAV Config 1)
+        with front camera, motor models, velocity control, odometry
+      ═══════════════════════════════════════════════════════════════
+    -->
+    <include>
+      <name>X4</name>
+      <pose>0 0 0.5 0 0 0</pose>
+      <uri>
+        https://fuel.gazebosim.org/1.0/OpenRobotics/models/X4 UAV Config 1
+      </uri>
+
+      <!-- Motor 0 — rotor_0 CCW -->
+      <plugin filename="gz-sim-multicopter-motor-model-system"
+              name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X4</robotNamespace>
+        <jointName>rotor_0_joint</jointName>
+        <linkName>rotor_0</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0182</timeConstantUp>
+        <timeConstantDown>0.0182</timeConstantDown>
+        <maxRotVelocity>1000.0</maxRotVelocity>
+        <motorConstant>1.269e-05</motorConstant>
+        <momentConstant>0.016754</momentConstant>
+        <commandSubTopic>command/motor_speed</commandSubTopic>
+        <actuator_number>0</actuator_number>
+        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
+        <rollingMomentCoefficient>0</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/0</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+
+      <!-- Motor 1 — rotor_1 CW -->
+      <plugin filename="gz-sim-multicopter-motor-model-system"
+              name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X4</robotNamespace>
+        <jointName>rotor_1_joint</jointName>
+        <linkName>rotor_1</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0182</timeConstantUp>
+        <timeConstantDown>0.0182</timeConstantDown>
+        <maxRotVelocity>1000.0</maxRotVelocity>
+        <motorConstant>1.269e-05</motorConstant>
+        <momentConstant>0.016754</momentConstant>
+        <commandSubTopic>command/motor_speed</commandSubTopic>
+        <actuator_number>1</actuator_number>
+        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
+        <rollingMomentCoefficient>0</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/1</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+
+      <!-- Motor 2 — rotor_2 CCW -->
+      <plugin filename="gz-sim-multicopter-motor-model-system"
+              name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X4</robotNamespace>
+        <jointName>rotor_2_joint</jointName>
+        <linkName>rotor_2</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0182</timeConstantUp>
+        <timeConstantDown>0.0182</timeConstantDown>
+        <maxRotVelocity>1000.0</maxRotVelocity>
+        <motorConstant>1.269e-05</motorConstant>
+        <momentConstant>0.016754</momentConstant>
+        <commandSubTopic>command/motor_speed</commandSubTopic>
+        <actuator_number>2</actuator_number>
+        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
+        <rollingMomentCoefficient>0</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/2</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+
+      <!-- Motor 3 — rotor_3 CW -->
+      <plugin filename="gz-sim-multicopter-motor-model-system"
+              name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X4</robotNamespace>
+        <jointName>rotor_3_joint</jointName>
+        <linkName>rotor_3</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0182</timeConstantUp>
+        <timeConstantDown>0.0182</timeConstantDown>
+        <maxRotVelocity>1000.0</maxRotVelocity>
+        <motorConstant>1.269e-05</motorConstant>
+        <momentConstant>0.016754</momentConstant>
+        <commandSubTopic>command/motor_speed</commandSubTopic>
+        <actuator_number>3</actuator_number>
+        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
+        <rollingMomentCoefficient>0</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/3</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+
+      <!-- Motor 4 — rotor_4 CCW (hexacopter has 6 rotors) -->
+      <plugin filename="gz-sim-multicopter-motor-model-system"
+              name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X4</robotNamespace>
+        <jointName>rotor_4_joint</jointName>
+        <linkName>rotor_4</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0182</timeConstantUp>
+        <timeConstantDown>0.0182</timeConstantDown>
+        <maxRotVelocity>1000.0</maxRotVelocity>
+        <motorConstant>1.269e-05</motorConstant>
+        <momentConstant>0.016754</momentConstant>
+        <commandSubTopic>command/motor_speed</commandSubTopic>
+        <actuator_number>4</actuator_number>
+        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
+        <rollingMomentCoefficient>0</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/4</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+
+      <!-- Motor 5 — rotor_5 CW -->
+      <plugin filename="gz-sim-multicopter-motor-model-system"
+              name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>X4</robotNamespace>
+        <jointName>rotor_5_joint</jointName>
+        <linkName>rotor_5</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0182</timeConstantUp>
+        <timeConstantDown>0.0182</timeConstantDown>
+        <maxRotVelocity>1000.0</maxRotVelocity>
+        <motorConstant>1.269e-05</motorConstant>
+        <momentConstant>0.016754</momentConstant>
+        <commandSubTopic>command/motor_speed</commandSubTopic>
+        <actuator_number>5</actuator_number>
+        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
+        <rollingMomentCoefficient>0</rollingMomentCoefficient>
+        <motorSpeedPubTopic>motor_speed/5</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
+      </plugin>
+
+      <!-- Velocity Controller — accepts Twist commands -->
+      <plugin filename="gz-sim-multicopter-control-system"
+              name="gz::sim::systems::MulticopterVelocityControl">
+        <robotNamespace>X4</robotNamespace>
+        <commandSubTopic>gazebo/command/twist</commandSubTopic>
+        <enableSubTopic>enable</enableSubTopic>
+        <comLinkName>base_link</comLinkName>
+        <velocityGain>6 6 10</velocityGain>
+        <attitudeGain>4 4 2</attitudeGain>
+        <angularRateGain>0.7 0.7 0.7</angularRateGain>
+        <maximumLinearAcceleration>2 2 3</maximumLinearAcceleration>
+        <maximumLinearVelocity>5 5 5</maximumLinearVelocity>
+        <maximumAngularVelocity>3 3 3</maximumAngularVelocity>
+
+        <rotorConfiguration>
+          <rotor>
+            <jointName>rotor_0_joint</jointName>
+            <forceConstant>1.269e-05</forceConstant>
+            <momentConstant>1.6754e-2</momentConstant>
+            <direction>1</direction>
+          </rotor>
+          <rotor>
+            <jointName>rotor_1_joint</jointName>
+            <forceConstant>1.269e-05</forceConstant>
+            <momentConstant>1.6754e-2</momentConstant>
+            <direction>-1</direction>
+          </rotor>
+          <rotor>
+            <jointName>rotor_2_joint</jointName>
+            <forceConstant>1.269e-05</forceConstant>
+            <momentConstant>1.6754e-2</momentConstant>
+            <direction>1</direction>
+          </rotor>
+          <rotor>
+            <jointName>rotor_3_joint</jointName>
+            <forceConstant>1.269e-05</forceConstant>
+            <momentConstant>1.6754e-2</momentConstant>
+            <direction>-1</direction>
+          </rotor>
+          <rotor>
+            <jointName>rotor_4_joint</jointName>
+            <forceConstant>1.269e-05</forceConstant>
+            <momentConstant>1.6754e-2</momentConstant>
+            <direction>1</direction>
+          </rotor>
+          <rotor>
+            <jointName>rotor_5_joint</jointName>
+            <forceConstant>1.269e-05</forceConstant>
+            <momentConstant>1.6754e-2</momentConstant>
+            <direction>-1</direction>
+          </rotor>
+        </rotorConfiguration>
+      </plugin>
+
+      <!-- Odometry Publisher -->
+      <plugin filename="gz-sim-odometry-publisher-system"
+              name="gz::sim::systems::OdometryPublisher">
+        <dimensions>3</dimensions>
+      </plugin>
+
+    </include>
+
+  </world>
+</sdf>

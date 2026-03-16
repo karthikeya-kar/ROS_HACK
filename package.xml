@@ -2,14 +2,24 @@
 <package format="3">
   <name>ros_hack</name>
   <version>0.0.1</version>
-  <description>ROS Hackathon Drone Package</description>
+  <description>ROS Hackathon Drone Package — X4 UAV gate navigation</description>
   <maintainer email="kar@todo.todo">kar</maintainer>
   <license>Apache-2.0</license>
+
+  <!-- Core ROS 2 -->
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>tf2_msgs</depend>
+
+  <!-- Image processing -->
   <depend>cv_bridge</depend>
-  <depend>robot_state_publisher</depend>
+
+  <!-- Gazebo integration -->
   <depend>ros_gz_sim</depend>
+  <depend>ros_gz_bridge</depend>
+
   <buildtool_depend>ament_python</buildtool_depend>
   <export>
     <build_type>ament_python</build_type>

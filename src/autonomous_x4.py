@@ -29,6 +29,10 @@ import numpy as np
 import threading
 import time
 import math
+import os
+HAS_DISPLAY = os.environ.get('DISPLAY', '') != ''
+
+# Check if display is available for visualization
 
 
 class PID:
@@ -219,18 +223,21 @@ class DroneWarsCompetitor(Node):
         # World-frame goal point (set when PASS begins)
         self.goal_world   = None   # np.array [x, y, z]
 
-        self.cmd_pub    = self.create_publisher(Twist, '/X4/gazebo/command/twist', 1)
+        self.cmd_pub    = self.create_publisher(Twist, '/model/X4/gazebo/command/twist', 1)
         self.enable_pub = self.create_publisher(Bool,  '/X4/enable', 1)
         self.create_subscription(
             Image,
-            '/world/multicopter/model/X4/link/base_link/sensor/camera_front/image',
+            '/world/aerial_nav_world/model/X4/link/base_link/sensor/camera_front/image',
             self.img_cb, 1)
         self.create_subscription(TFMessage, '/model/X4/pose', self.pose_cb, 1)
         self.create_timer(0.033, self.control_loop)
         self.create_timer(0.5,   self.auto_enable)
 
-        self.viz_thread = threading.Thread(target=self._viz_loop, daemon=True)
-        self.viz_thread.start()
+        if HAS_DISPLAY:
+            self.viz_thread = threading.Thread(target=self._viz_loop, daemon=True)
+            self.viz_thread.start()
+        else:
+            self.get_logger().info('No DISPLAY — visualization disabled')
         self.get_logger().info('=== Drone Wars X4 — Goal-Point Edition ===')
 
     # ── helpers ───────────────────────────────────────────────────────────
@@ -252,7 +259,7 @@ class DroneWarsCompetitor(Node):
     def pose_cb(self, msg):
         for tf in msg.transforms:
             name = tf.child_frame_id
-            if 'X4' in name or 'x4' in name.lower():
+            if 'X4' in name or 'x4' in name.lower() or 'base_link' in name:
                 t = tf.transform.translation
                 q = tf.transform.rotation
                 with self.pose_lock:
@@ -446,9 +453,10 @@ class DroneWarsCompetitor(Node):
             vz_cmd  =  self.pid_vz.update(err_y)
 
         dist_to_goal = self._dist_to_goal()
-        dbg = self._draw(frame, gate, err_x, err_y, len(gates), dist_to_goal)
-        with self.viz_lock:
-            self.debug_frame = dbg
+        if HAS_DISPLAY:
+            dbg = self._draw(frame, gate, err_x, err_y, len(gates), dist_to_goal)
+            with self.viz_lock:
+                self.debug_frame = dbg
 
         # ── GLOBAL ESCAPE ──────────────────────────────────────────────────
         if self.state not in ('TAKEOFF', 'HOVER') and cov > self.GATE_ESCAPE_COV:
